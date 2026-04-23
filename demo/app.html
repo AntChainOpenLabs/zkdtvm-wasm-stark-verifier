@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>dt-wasm-verifier · ethproofs</title>
+  <style>
+    :root {
+      --bg0: #0a0e17;
+      --bg1: #111827;
+      --card: rgba(255,255,255,0.035);
+      --stroke: rgba(255,255,255,0.10);
+      --text: #e8ecf4;
+      --muted: #8b95a8;
+      --accent: #3dd6c3;
+      --accent-dim: rgba(61,214,195,0.12);
+      --danger: #ff6b6b;
+      --danger-dim: rgba(255,107,107,0.10);
+      --radius: 14px;
+      font-synthesis: none;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;
+      font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1100px 550px at 18% -8%,rgba(61,214,195,0.12),transparent 55%),
+        radial-gradient(800px 450px at 92% 8%,rgba(99,102,241,0.10),transparent 50%),
+        linear-gradient(165deg,var(--bg0),var(--bg1));
+      line-height:1.55;
+    }
+    .wrap{max-width:960px;margin:0 auto;padding:clamp(1.25rem,4vw,2.5rem)}
+
+    /* --- header --- */
+    header{margin-bottom:2rem}
+    header h1{font-size:clamp(1.4rem,3.5vw,1.85rem);font-weight:700;letter-spacing:-0.02em}
+    header p{color:var(--muted);max-width:56ch;font-size:0.92rem;margin-top:0.3rem}
+
+    /* --- tabs --- */
+    .tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:1px solid var(--stroke)}
+    .tab{
+      padding:0.6rem 1.2rem;font-size:0.88rem;font-weight:600;cursor:pointer;
+      border:none;background:none;color:var(--muted);
+      border-bottom:2px solid transparent;transition:color .15s,border-color .15s;
+    }
+    .tab:hover{color:var(--text)}
+    .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+    /* --- panels --- */
+    .panel{display:none}
+    .panel.active{display:block}
+
+    /* --- fixture list --- */
+    .fixture-list{display:flex;flex-direction:column;gap:0.65rem}
+    .fixture-card{
+      display:flex;align-items:center;justify-content:space-between;
+      background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);
+      padding:1rem 1.15rem;transition:border-color .15s,background .15s;cursor:default;
+    }
+    .fixture-card:hover{border-color:rgba(61,214,195,0.3);background:var(--accent-dim)}
+    .fixture-info{display:flex;flex-direction:column;gap:0.15rem}
+    .fixture-name{font-weight:600;font-size:0.95rem}
+    .fixture-meta{font-size:0.78rem;color:var(--muted)}
+
+    /* --- drop zones --- */
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:700px){.grid{grid-template-columns:1fr}}
+    .drop{
+      position:relative;border:1px dashed var(--stroke);border-radius:var(--radius);
+      background:var(--card);padding:1.25rem 1rem;min-height:125px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;transition:border-color .2s,background .2s;cursor:pointer;
+    }
+    .drop:hover,.drop.drag{border-color:rgba(61,214,195,0.45);background:var(--accent-dim)}
+    .drop strong{font-size:0.9rem;font-weight:600}
+    .drop .hint{margin-top:0.3rem;font-size:0.8rem;color:var(--muted)}
+    .drop .meta{margin-top:0.6rem;font-size:0.78rem;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;padding:0 0.5rem}
+    .drop input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+    /* --- actions --- */
+    .actions{display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem 1rem;margin-top:1.25rem}
+    .btn-verify{
+      appearance:none;border:none;border-radius:999px;padding:0.7rem 1.35rem;
+      font-size:0.95rem;font-weight:600;color:#04120f;
+      background:linear-gradient(135deg,#5ef3dc,var(--accent));
+      box-shadow:0 10px 30px rgba(61,214,195,0.22);cursor:pointer;
+      transition:transform .15s,filter .15s,opacity .2s;
+    }
+    .btn-verify:not(:disabled):hover{filter:brightness(1.05);transform:translateY(-1px)}
+    .btn-verify:disabled{opacity:0.38;cursor:not-allowed;box-shadow:none}
+    .btn-verify.loading{pointer-events:none;opacity:0.85}
+
+    .pill{
+      font-size:0.75rem;color:var(--muted);padding:0.25rem 0.6rem;
+      border-radius:999px;border:1px solid var(--stroke);background:rgba(0,0,0,0.2);
+    }
+    .pill.ready{color:var(--accent);border-color:rgba(61,214,195,0.35)}
+
+    /* --- result --- */
+    .result{
+      margin-top:1.5rem;border-radius:var(--radius);border:1px solid var(--stroke);
+      background:rgba(0,0,0,0.22);padding:1.1rem 1.25rem;min-height:4.5rem;display:none;
+    }
+    .result.visible{display:block}
+    .result.ok{border-color:rgba(61,214,195,0.35);background:linear-gradient(145deg,var(--accent-dim),rgba(0,0,0,0.12))}
+    .result.fail{border-color:rgba(255,107,107,0.35);background:linear-gradient(145deg,var(--danger-dim),rgba(0,0,0,0.12))}
+    .result .row{display:flex;flex-wrap:wrap;align-items:baseline;gap:0.5rem 1rem}
+    .result .label{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
+    .result .time{font-variant-numeric:tabular-nums;font-size:1.85rem;font-weight:700;letter-spacing:-0.03em}
+    .result .unit{font-size:1rem;font-weight:600;color:var(--muted)}
+    .result .msg{margin-top:0.65rem;font-size:0.88rem;color:var(--muted);white-space:pre-wrap;word-break:break-word}
+    .result.fail .msg{color:#ffc9c9}
+
+    .spinner{display:inline-block;width:1em;height:1em;border:2px solid rgba(255,255,255,0.25);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-0.12em;margin-right:0.35em}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>dt-wasm-verifier</h1>
+      <p>Verify a compressed STARK proof in the browser via WASM. Choose a bundled fixture or upload your own files.</p>
+    </header>
+
+    <!-- Tab bar -->
+    <div class="tabs">
+      <button class="tab active" data-tab="fixtures">Fixtures</button>
+      <button class="tab" data-tab="upload">Upload files</button>
+    </div>
+
+    <!-- Panel: fixtures -->
+    <div class="panel active" id="panel-fixtures">
+      <div class="fixture-list" id="fixtureList">
+        <!-- populated by JS -->
+      </div>
+      <div class="actions">
+        <button class="btn-verify" id="goFixture" disabled>Verify</button>
+        <span class="pill" id="pillFixture">Runtime: loading…</span>
+      </div>
+      <div class="result" id="rFixture"></div>
+    </div>
+
+    <!-- Panel: upload -->
+    <div class="panel" id="panel-upload">
+      <div class="grid">
+        <label class="drop" id="dzP">
+          <strong>Proof</strong>
+          <span class="hint">Drop or choose <code>proof.bin</code></span>
+          <span class="meta" id="metaP"></span>
+          <input id="inpP" type="file" accept=".bin,application/octet-stream,*/*" />
+        </label>
+        <label class="drop" id="dzV">
+          <strong>Verification key</strong>
+          <span class="hint">Drop or choose <code>vk.bin</code></span>
+          <span class="meta" id="metaV"></span>
+          <input id="inpV" type="file" accept=".bin,application/octet-stream,*/*" />
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn-verify" id="goUpload" disabled>Verify</button>
+        <span class="pill" id="pillUpload">Runtime: loading…</span>
+      </div>
+      <div class="result" id="rUpload"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    /* ---- fixtures manifest (auto-discovered from server) ---- */
+    const FIXTURES_INDEX_URL = '/fixtures/index.json';
+
+    /* ---- state ---- */
+    let worker;
+    let workerReady = false;
+    let warmError = null;
+    let verifySeq = 0;
+
+    /* uploaded file blobs */
+    let uploadProof = null;
+    let uploadVk = null;
+
+    /* selected fixture */
+    let selectedFixture = null;
+    let fixtureProofBytes = null;
+    let fixtureVkBytes = null;
+
+    /* ---- DOM refs ---- */
+    const tabs = document.querySelectorAll('.tab');
+    const panelFixtures = document.getElementById('panel-fixtures');
+    const panelUpload = document.getElementById('panel-upload');
+    const fixtureList = document.getElementById('fixtureList');
+    const goFixture = document.getElementById('goFixture');
+    const goUpload = document.getElementById('goUpload');
+    const pillFixture = document.getElementById('pillFixture');
+    const pillUpload = document.getElementById('pillUpload');
+    const rFixture = document.getElementById('rFixture');
+    const rUpload = document.getElementById('rUpload');
+    const metaP = document.getElementById('metaP');
+    const metaV = document.getElementById('metaV');
+    const inpP = document.getElementById('inpP');
+    const inpV = document.getElementById('inpV');
+    const dzP = document.getElementById('dzP');
+    const dzV = document.getElementById('dzV');
+
+    /* ---- helpers ---- */
+    function fmtBytes(n) {
+      if (n < 1024) return `${n} B`;
+      if (n < 1048576) return `${(n / 1024).toFixed(1)} KB`;
+      return `${(n / 1048576).toFixed(2)} MB`;
+    }
+
+    /* ---- tabs ---- */
+    tabs.forEach(t => t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      const key = t.dataset.tab;
+      panelFixtures.classList.toggle('active', key === 'fixtures');
+      panelUpload.classList.toggle('active', key === 'upload');
+    }));
+
+    /* ---- worker ---- */
+    function getWorker() {
+      if (!worker) {
+        worker = new Worker('/demo/verify-worker.mjs', { type: 'module' });
+        worker.onmessage = (ev) => {
+          const m = ev.data;
+          if (m.type === 'warmed') {
+            workerReady = true;
+            warmError = null;
+            setPills('ready', true);
+            syncFixtureBtn();
+            syncUploadBtn();
+          } else if (m.type === 'warm_error') {
+            warmError = m.error;
+            workerReady = false;
+            setPills('failed', false);
+          } else if (m.type === 'result') {
+            if (m.id !== verifySeq) return;
+            const activeResult = panelFixtures.classList.contains('active') ? rFixture : rUpload;
+            const activeBtn = panelFixtures.classList.contains('active') ? goFixture : goUpload;
+            activeBtn.classList.remove('loading');
+            if (m.ok) showOk(activeResult, m.ms);
+            else showFail(activeResult, 'Verification failed', m.error);
+          }
+        };
+      }
+      return worker;
+    }
+
+    function setPills(text, ready) {
+      [pillFixture, pillUpload].forEach(p => {
+        p.textContent = `Runtime: ${text}`;
+        p.classList.toggle('ready', !!ready);
+      });
+    }
+
+    function prewarm() {
+      setPills('loading…', false);
+      getWorker().postMessage({ type: 'warm' });
+    }
+
+    /* ---- result display ---- */
+    function showOk(el, ms) {
+      el.className = 'result visible ok';
+      el.innerHTML = `<div class="row"><span class="label">Verification passed</span><span class="time">${ms.toFixed(1)}</span><span class="unit">ms</span></div><div class="msg">Time is verify-only inside the worker (excluding file I/O and UI).</div>`;
+    }
+    function showFail(el, title, detail) {
+      el.className = 'result visible fail';
+      el.innerHTML = `<div class="row"><span class="label">${title}</span></div><div class="msg">${detail ? String(detail) : ''}</div>`;
+    }
+
+    /* ---- verify dispatch ---- */
+    function doVerify(proofBytes, vkBytes, resultEl, btn) {
+      verifySeq += 1;
+      resultEl.className = 'result visible';
+      resultEl.innerHTML = '<div class="row"><span class="spinner"></span><span class="label">Verifying…</span></div>';
+      btn.classList.add('loading');
+      getWorker().postMessage({ type: 'verify', id: verifySeq, proof: proofBytes, vk: vkBytes }, []);
+    }
+
+    /* ============ Fixtures panel ============ */
+    async function loadFixturesIndex() {
+      try {
+        const resp = await fetch(FIXTURES_INDEX_URL);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        return await resp.json();
+      } catch {
+        return [{ name: 'example_0', proof: '/fixtures/example_0/proof.bin', vk: '/fixtures/example_0/vk.bin' }];
+      }
+    }
+
+    function renderFixtures(items) {
+      fixtureList.innerHTML = '';
+      items.forEach((item, idx) => {
+        const card = document.createElement('div');
+        card.className = 'fixture-card';
+        card.dataset.idx = idx;
+        card.innerHTML = `<div class="fixture-info"><span class="fixture-name">${item.name}</span><span class="fixture-meta">proof: ${item.proof} · vk: ${item.vk}</span></div><input type="radio" name="fixture" style="accent-color:var(--accent);width:18px;height:18px" />`;
+        const radio = card.querySelector('input');
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.fixture-card input[type=radio]').forEach(r => r.checked = false);
+          radio.checked = true;
+          selectedFixture = item;
+          fixtureProofBytes = null;
+          fixtureVkBytes = null;
+          syncFixtureBtn();
+        });
+        fixtureList.appendChild(card);
+      });
+    }
+
+    function syncFixtureBtn() {
+      goFixture.disabled = !selectedFixture || !!warmError || !workerReady;
+    }
+
+    goFixture.addEventListener('click', async () => {
+      if (!selectedFixture) return;
+      goFixture.disabled = true;
+      try {
+        if (!fixtureProofBytes || !fixtureVkBytes) {
+          const [pr, vr] = await Promise.all([fetch(selectedFixture.proof), fetch(selectedFixture.vk)]);
+          if (!pr.ok) throw new Error(`proof HTTP ${pr.status}`);
+          if (!vr.ok) throw new Error(`vk HTTP ${vr.status}`);
+          fixtureProofBytes = new Uint8Array(await pr.arrayBuffer());
+          fixtureVkBytes = new Uint8Array(await vr.arrayBuffer());
+        }
+        doVerify(fixtureProofBytes, fixtureVkBytes, rFixture, goFixture);
+      } catch (e) {
+        showFail(rFixture, 'Failed to load fixture', String(e));
+        goFixture.disabled = false;
+      }
+    });
+
+    /* ============ Upload panel ============ */
+    function syncUploadBtn() {
+      goUpload.disabled = !(uploadProof && uploadVk) || !!warmError || !workerReady;
+      metaP.textContent = uploadProof ? `${uploadProof.name} · ${fmtBytes(uploadProof.size)}` : '';
+      metaV.textContent = uploadVk ? `${uploadVk.name} · ${fmtBytes(uploadVk.size)}` : '';
+    }
+
+    async function handleFile(file, which) {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const entry = { name: file.name, size: file.size, bytes };
+      if (which === 'p') uploadProof = entry; else uploadVk = entry;
+      syncUploadBtn();
+    }
+
+    inpP.addEventListener('change', (e) => { if (e.target.files[0]) handleFile(e.target.files[0], 'p'); });
+    inpV.addEventListener('change', (e) => { if (e.target.files[0]) handleFile(e.target.files[0], 'v'); });
+
+    function wireDrop(zone, which) {
+      ['dragenter', 'dragover'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag'); }));
+      ['dragleave', 'drop'].forEach(ev => zone.addEventListener(ev, () => zone.classList.remove('drag')));
+      zone.addEventListener('drop', e => { e.preventDefault(); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], which); });
+    }
+    wireDrop(dzP, 'p');
+    wireDrop(dzV, 'v');
+
+    goUpload.addEventListener('click', () => {
+      if (!uploadProof || !uploadVk) return;
+      doVerify(uploadProof.bytes, uploadVk.bytes, rUpload, goUpload);
+    });
+
+    /* ============ init ============ */
+    loadFixturesIndex().then(renderFixtures);
+    prewarm();
+  </script>
+</body>
+</html>

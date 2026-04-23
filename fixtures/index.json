@@ -1,0 +1,15 @@
+[
+  {
+    "name": "example_0",
+    "description": "Compressed STARK proof (valid)",
+    "proof": "/fixtures/example_0/proof.bin",
+    "vk": "/fixtures/example_0/vk.bin"
+  },
+  {
+    "name": "bad_example_0",
+    "description": "Tampered VK (1 byte modified) — expected to FAIL",
+    "proof": "/fixtures/bad_example_0/proof.bin",
+    "vk": "/fixtures/bad_example_0/vk.bin",
+    "expect": "fail"
+  }
+]
