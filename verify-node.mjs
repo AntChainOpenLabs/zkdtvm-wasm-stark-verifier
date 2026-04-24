@@ -12,7 +12,7 @@ initVerifierRuntime();
 
 // If explicit paths are given, verify that single pair and exit.
 if (process.argv[2] && process.argv[3]) {
-  verifySingle(process.argv[2], process.argv[3]);
+  runVerify(process.argv[2], process.argv[3]);
   process.exit(0);
 }
 

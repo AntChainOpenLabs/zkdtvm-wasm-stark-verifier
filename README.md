@@ -1,4 +1,4 @@
-# zkDTVM-wasm-stark-verifier
+# dt-wasm-verifier
 
 Pre-built WASM verifier for **compressed zkDTVM proofs**. No Rust toolchain required — just Node.js.
 
@@ -78,13 +78,6 @@ Running 2 fixture(s):
   vk    fixtures/example_0/vk.bin (32 bytes)
   OK 165.01 ms
 
-[bad_example_0] (expect: fail)
-  proof fixtures/bad_example_0/proof.bin (2417106 bytes)
-  vk    fixtures/bad_example_0/vk.bin (32 bytes)
-  FAIL compressed proof verification failed (124.46 ms)
-  ✓ correctly rejected
-
-Done: 2 passed, 0 failed
 ```
 
 Or verify a specific proof/vk pair:
