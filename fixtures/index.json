@@ -1,0 +1,26 @@
+[
+  {
+    "name": "example_1",
+    "description": "Compressed STARK proof (valid)",
+    "proof": "/fixtures/example_1/proof.bin",
+    "vk": "/fixtures/example_1/vk.bin"
+  },
+  {
+    "name": "example_2",
+    "description": "Compressed STARK proof (valid)",
+    "proof": "/fixtures/example_2/proof.bin",
+    "vk": "/fixtures/example_2/vk.bin"
+  },
+  {
+    "name": "example_3",
+    "description": "Compressed STARK proof (valid)",
+    "proof": "/fixtures/example_3/proof.bin",
+    "vk": "/fixtures/example_3/vk.bin"
+  },
+  {
+    "name": "example_4",
+    "description": "Compressed STARK proof (valid)",
+    "proof": "/fixtures/example_4/proof.bin",
+    "vk": "/fixtures/example_4/vk.bin"
+  }
+]

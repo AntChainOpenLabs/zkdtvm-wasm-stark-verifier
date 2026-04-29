@@ -1,0 +1,17 @@
+{
+  "name": "dt-wasm-verifier",
+  "type": "module",
+  "description": "WASM bindings for zkdtvm compressed proof verification (zkdtvm-stark-verifier)",
+  "version": "0.1.0",
+  "license": "MIT OR Apache-2.0",
+  "files": [
+    "dt_wasm_verifier_bg.wasm",
+    "dt_wasm_verifier.js",
+    "dt_wasm_verifier.d.ts"
+  ],
+  "main": "dt_wasm_verifier.js",
+  "types": "dt_wasm_verifier.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

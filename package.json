@@ -1,0 +1,11 @@
+{
+  "name": "dt-wasm-verifier",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pre-built WASM verifier for compressed zkDTVM proofs (ethproofs integration)",
+  "type": "module",
+  "scripts": {
+    "demo": "node serve.mjs",
+    "verify:node": "node verify-node.mjs"
+  }
+}
