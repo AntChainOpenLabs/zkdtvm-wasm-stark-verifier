@@ -1,18 +1,18 @@
 [package]
 name = "dt-wasm-verifier"
-version = "0.1.0"
+version = "0.8.0"
 edition = "2021"
 description = "WASM bindings for zkdtvm compressed proof verification (zkdtvm-stark-verifier)"
 license = "Apache-2.0"
+repository = "https://github.com/AntChainOpenLabs/zkdtvm-wasm-stark-verifier"
 publish = false
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-# Open-source verifier backend. Adapted to zkdtvm v0.6.3.
-# Repo: https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier
-zkdtvm-stark-verifier = { git = "https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git", tag = "v0.6.3", default-features = true }
+# Public v0.8.0 verifier backend.
+zkdtvm-stark-verifier = { git = "https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git", branch = "v0.8.0-release", default-features = true }
 wasm-bindgen = "0.2.100"
 console_error_panic_hook = "0.1.7"
 

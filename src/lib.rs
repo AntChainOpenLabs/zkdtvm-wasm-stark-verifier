@@ -1,12 +1,9 @@
 //! WASM surface for `zkdtvm_stark_verifier::verify_compressed_bytes`
-//! (compressed reduce proof + core VK digest).
+//! (compressed RootSC reduce proof + full program verifying key).
 //!
 //! Inputs are bincode-serialized byte buffers:
-//! - `proof_bytes`: `DTReduceProof<InnerSC>` (carries both the compress-stage VK and the
-//!   shard proof).
-//! - `vk_bytes`: bincode-serialized `[u32; DIGEST_SIZE]` — the Poseidon2 digest of
-//!   the core `DTVerifyingKey` embedded in the proof's public values. Legacy
-//!   bincode-serialized `DTVerifyingKey` bytes are also accepted by the backend.
+//! - `proof_bytes`: `DTReduceProof<RootSC>`.
+//! - `vk_bytes`: bincode-serialized `DTVerifyingKey`.
 
 use wasm_bindgen::prelude::*;
 use zkdtvm_stark_verifier::verify_compressed_bytes as backend_verify_compressed_bytes;
