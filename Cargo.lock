@@ -850,7 +850,7 @@ dependencies = [
 [[package]]
 name = "dt-core-executor"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "bincode",
  "bytemuck",
@@ -892,7 +892,7 @@ dependencies = [
 [[package]]
 name = "dt-core-machine"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "bincode",
  "cbindgen",
@@ -951,12 +951,12 @@ dependencies = [
 [[package]]
 name = "dt-core-test-elf"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 
 [[package]]
 name = "dt-curves"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "cfg-if",
  "dashu",
@@ -977,7 +977,7 @@ dependencies = [
 [[package]]
 name = "dt-derive"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "quote",
  "syn 1.0.109",
@@ -1264,7 +1264,7 @@ dependencies = [
 [[package]]
 name = "dt-primitives"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "bincode",
  "blake3",
@@ -1284,7 +1284,7 @@ dependencies = [
 [[package]]
 name = "dt-prover"
 version = "5.0.1"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "anyhow",
  "bincode",
@@ -1329,7 +1329,7 @@ dependencies = [
 [[package]]
 name = "dt-recursion-circuit"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "bincode",
  "dt-core-executor",
@@ -1376,7 +1376,7 @@ dependencies = [
 [[package]]
 name = "dt-recursion-compiler"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "backtrace",
  "dt-core-machine",
@@ -1400,7 +1400,7 @@ dependencies = [
 [[package]]
 name = "dt-recursion-core"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "backtrace",
  "cbindgen",
@@ -1445,7 +1445,7 @@ dependencies = [
 [[package]]
 name = "dt-recursion-derive"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "quote",
  "syn 1.0.109",
@@ -1454,7 +1454,7 @@ dependencies = [
 [[package]]
 name = "dt-recursion-gnark-ffi"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "anyhow",
  "bincode",
@@ -1479,7 +1479,7 @@ dependencies = [
 [[package]]
 name = "dt-stark"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "arrayref",
  "dt-derive",
@@ -2499,7 +2499,7 @@ dependencies = [
 [[package]]
 name = "native-recursion"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "bincode",
  "dt-core-machine",
@@ -2524,7 +2524,7 @@ dependencies = [
 [[package]]
 name = "native-recursion-derive"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "quote",
  "syn 2.0.119",
@@ -2878,7 +2878,7 @@ dependencies = [
 [[package]]
 name = "polyair"
 version = "5.0.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "arrayref",
  "bincode",
@@ -4318,7 +4318,7 @@ dependencies = [
 [[package]]
 name = "whir-pcs"
 version = "0.1.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "bincode",
  "dt-p3-baby-bear",
@@ -4700,7 +4700,7 @@ dependencies = [
 [[package]]
 name = "zkdtvm-stark-verifier"
 version = "0.8.0"
-source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#94bdd8a4ec2619239eca34e0799fe93a6cdc0cfd"
+source = "git+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git?tag=v0.8.0#c5da37f5d187616c9ffe445e2e29e1f4d21c612d"
 dependencies = [
  "bincode",
  "dt-core-executor",
