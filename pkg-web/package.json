@@ -4,7 +4,10 @@
   "description": "WASM bindings for zkdtvm compressed proof verification (zkdtvm-stark-verifier)",
   "version": "0.8.0",
   "license": "Apache-2.0",
-  "repository": "https://github.com/AntChainOpenLabs/zkdtvm-wasm-stark-verifier",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AntChainOpenLabs/zkdtvm-wasm-stark-verifier"
+  },
   "files": [
     "dt_wasm_verifier_bg.wasm",
     "dt_wasm_verifier.js",

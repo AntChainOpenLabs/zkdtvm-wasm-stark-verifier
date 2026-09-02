@@ -1,9 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export const initVerifierRuntime: () => [number, number];
 export const verifyCompressedBytes: (a: number, b: number, c: number, d: number) => [number, number];
 export const verifyCompressedOk: (a: number, b: number, c: number, d: number) => number;
-export const initVerifierRuntime: () => void;
 export const babybearextinv: (a: number, b: number, c: number, d: number, e: number) => number;
 export const babybearinv: (a: number) => number;
 export const __wbindgen_free: (a: number, b: number, c: number) => void;

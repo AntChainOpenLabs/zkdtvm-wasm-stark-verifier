@@ -1,123 +1,116 @@
 # zkdtvm-wasm-stark-verifier
 
-Source-build recipe for the WASM bindings of **`zkdtvm-stark-verifier::verify_compressed_bytes`**. Running `wasm-pack` against this crate produces the checked-in `pkg-node/` and `pkg-web/` release artifacts.
+WASM verifier for zkdtvm v0.8.0 compressed STARK proofs. The public verification API has two inputs:
 
-Consumers can use the checked-in pre-built WASM packages without installing the Rust toolchain.
+```text
+verifyCompressedBytes(proofBytes, vkBytes)
+```
 
----
+- `proofBytes`: bincode-serialized `DTReduceProof<RootSC>`.
+- `vkBytes`: bincode-serialized full `DTVerifyingKey` (the program/core VK).
 
-## Version matrix
+This build accepts only the compact **elided** proof form. A full proof containing the L4 preprocessing opening (the roughly 290 KB form) is rejected, even if it is otherwise valid. For the Desktop fixture, elision changes the serialized size from 292,030 to 252,290 bytes; the 39,740-byte difference is that fixed L4 opening.
 
-| Component        | Version / Source |
-| ---------------- | ---------------- |
-| zkdtvm-suite     | **v0.8.0** (`banjie-dev` commit `82a57cadf6921e4fb45181d98f1a5af0148ab491`) |
-| Verifier backend | Public [`zkdtvm-stark-verifier`](https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier), `v0.8.0-release` branch |
+The L4 machine, program and VK are verifier-release material. They are embedded in the WASM package and are not API inputs. See [the v0.8.0 verifier design](docs/v0.8.0-elided-wasm-verifier.md) for the binding and performance model.
 
-> `zkdtvm_vks/v0.8.0/vk-full.bin` is the full bincode-serialized
-> `DTVerifyingKey` required by the current v0.8.0 proof fixture.
-> `zkdtvm_vks/v0.8.0/vk.bin` is retained as the corresponding 32-byte
-> digest artifact, but it is not sufficient for native-recursion verification.
+## Backend revision
 
-### History
+The verifier backend is pinned to the immutable Git revision that contains the reusable elided L4 verifier:
 
-Each row pins both the proving-side release and the verifier backend. A bump on either side invalidates artifacts produced by this recipe:
+```text
+https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git
+6bb8a737bdc5473332b980820921c090211069c7
+```
 
-- A **zkdtvm-suite** change invalidates the built `pkg-node/` / `pkg-web/` WASM artifacts and the verifying-key files under `zkdtvm_vks/`.
-- A **program verifying key** change invalidates the corresponding files under `zkdtvm_vks/`.
+An ordinary WASM build does not require a sibling backend checkout.
 
-| Branch | zkdtvm-suite | Backend |
-| ------ | ------------ | ------- |
-| `v0.8.0-release` | v0.8.0 | Public `zkdtvm-stark-verifier/v0.8.0-release` |
+## Build and test on macOS
 
----
-
-## Prerequisites
-
-- **Rust** with the `wasm32-unknown-unknown` target installed.
-- **Node.js** ≥ 18 (for the demo server and the Node smoke test).
-- **`wasm-pack`** and **`wasm-opt`** on `PATH` if you want to rebuild the WASM packages from source. For example: `cargo install wasm-pack --version 0.15.0` and `brew install binaryen`.
-- Network access to the public `zkdtvm-stark-verifier` GitHub repository and crates.io during `cargo` / `wasm-pack` builds. Plonky3 is resolved through exact `dt-p3-*` version `0.8.0` crates.io packages.
-
----
-
-## Build
+Install the prerequisites:
 
 ```bash
-npm run wasm:node    # output: pkg-node/  (Node.js target, default smoke test)
-npm run wasm:web     # output: pkg-web/   (browser target, for the web demo)
+xcode-select --install
+rustup target add wasm32-unknown-unknown
+cargo install wasm-pack --version 0.13.1 --locked
+brew install binaryen
 ```
 
-Artifact layout under each `pkg-*/`:
-
-```
-dt_wasm_verifier.js         # JS glue
-dt_wasm_verifier_bg.wasm    # compiled WASM (current pre-built artifact is ~15 MiB)
-dt_wasm_verifier.d.ts       # TypeScript defs
-package.json                # npm package metadata
-```
-
-The release profile in `Cargo.toml` favours **runtime speed** (`opt-level = 3`, `lto = true`) over minimal `.wasm` size.
-
----
-
-## Exported JS API
-
-| Function                           | Signature                                   | Description                                                  |
-| ---------------------------------- | ------------------------------------------- | ------------------------------------------------------------ |
-| `init()` *(web only)*              | `() → Promise<void>`                        | Load & compile WASM. Node auto-loads.                        |
-| `initVerifierRuntime()`            | `() → void`                                 | Install panic hook. Call once before verifying.              |
-| `verifyCompressedBytes(proof, vk)` | `(Uint8Array, Uint8Array) → void`           | Verify; **throws** on failure. v0.8.0 proofs use the full verifying key. |
-| `verifyCompressedOk(proof, vk)`    | `(Uint8Array, Uint8Array) → boolean`        | Verify; returns `true` on success, `false` otherwise.        |
-
-### Byte layout
-
-- `proof` — bincode-serialized `DTReduceProof<RootSC>` bytes.
-- `vk`    — bincode-serialized full `DTVerifyingKey`. Digest-only input is rejected because native-recursion verification requires the complete key.
-
-This matches `zkdtvm_stark_verifier::verify_compressed_bytes` one-to-one.
-
----
-
-## Smoke test (post-build sanity check)
+Clone and select the verifier branch if it is not already present:
 
 ```bash
-npm run test:node
-# → OK <ms>
+mkdir -p ~/projects/learn-from-openvm
+cd ~/projects/learn-from-openvm
+git clone https://github.com/AntChainOpenLabs/zkdtvm-wasm-stark-verifier.git
+git -C zkdtvm-wasm-stark-verifier switch v0.8.0-verifier
 ```
 
-Defaults to `web/samples/compressed_proof.bin` + `web/samples/compressed_vk.bin` (a checked-in sample pair matching the current backend). To verify an arbitrary pair:
+Build the Node target and verify the files on the Mac Desktop:
 
 ```bash
-node scripts/verify_node.mjs /path/to/proof.bin /path/to/vk.bin
+cd ~/projects/learn-from-openvm/zkdtvm-wasm-stark-verifier
+npm run wasm:node
+node scripts/verify_node.mjs ~/Desktop/proof.bin ~/Desktop/vk.bin
 ```
 
----
+The script reports initialization separately and runs verification twice to show reuse. On the development Mac, the 252,290-byte fixture measured approximately:
 
-## Web demo
+```text
+init          1.8 s
+verify #1    19 ms
+verify #2     6 ms
+```
+
+Exact times depend on the CPU and Node version. Initialization performs one L4 setup and keeps its fixed preprocessing data for the lifetime of the worker. Each later verification reuses that state; it does not build L1-L4 or rerun setup.
+
+Other build targets:
 
 ```bash
-npm run demo
-# open http://127.0.0.1:8788/
+npm run wasm:web     # browser package in pkg-web/
+npm run wasm:all     # bundler, browser and Node packages
+npm run test:node    # checked-in sample pair
 ```
 
-The UI loads `pkg-web/` once per tab and runs `verifyCompressedBytes` inside a worker. Use **Load sample** to pull `web/samples/`, or drop your own `compressed_proof.bin` / `compressed_vk.bin`.
+The release profile uses `opt-level = 3`, LTO and `wasm-opt -O3` for verification speed.
 
----
+## Rebuilding the fixed L4 artifact
 
-## Release branch
+The checked-in [`artifacts/v0.8.0-l4-verifier.bin`](artifacts/v0.8.0-l4-verifier.bin) is release material. Rebuild it only when the fixed verifier/L4 machine changes:
 
-The `v0.8.0-release` branch contains both the Rust build recipe and the generated `pkg-node/` / `pkg-web/` artifacts. Its backend and exact crates.io package versions are pinned by `Cargo.lock`.
+```bash
+cd ..
+git clone https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git zkdtvm-stark-verifier-v0.8.0
+cd zkdtvm-stark-verifier-v0.8.0
+git checkout 6bb8a737bdc5473332b980820921c090211069c7
+cargo run --release \
+  -p zkdtvm-stark-verifier \
+  --bin build_l4_verifier_artifact -- \
+  ../zkdtvm-wasm-stark-verifier/artifacts/v0.8.0-l4-verifier.bin
+```
 
----
+Then rebuild all WASM packages and run the fixture test. The current artifact is 382,685 bytes and has SHA-256:
 
-## Generating production `compressed_proof.bin` / `compressed_vk.bin`
+```text
+88494d848419a9ac47fadf1c85c08bfff5b4d5abafaf0ee81ac988d3d8dfc8ff
+```
 
-The sample pair under `web/samples/` is copied from the verified fixture generated by `zkdtvm-stark-verifier/v0.8.0-release`. Its VK was derived from the latest Fibonacci ELF built from the pinned suite commit. To produce real proofs, export the `RootSC` proof and full `DTVerifyingKey` as raw bincode-serialized bytes using the layout described in [Byte layout](#byte-layout).
+It stores the fixed L4 program and VK. It intentionally does not embed the derived PCS prover data, which serializes to roughly 350 MiB; that data is derived once during `initVerifierRuntime()` and then retained.
 
-Refer to the zkdtvm SDK documentation for full prover setup.
+## JavaScript API
 
----
+| Function | Signature | Behavior |
+| --- | --- | --- |
+| `initVerifierRuntime()` | `() -> void` | Initializes and caches the verifier; throws on failure. |
+| `verifyCompressedBytes(proof, vk)` | `(Uint8Array, Uint8Array) -> void` | Verifies an elided proof; throws on failure. |
+| `verifyCompressedOk(proof, vk)` | `(Uint8Array, Uint8Array) -> boolean` | Same verification, returning `false` on failure. |
+
+For `pkg-web`, first call its generated asynchronous WASM loader. The Node package loads the WASM module automatically.
+
+Malformed bytes, a mismatched program VK, a mismatched fixed L4 VK, an invalid proof, and a non-elided proof all fail closed.
+
+## Updating the backend dependency
+
+Test backend changes through a local path dependency first. After the backend change is published, pin its immutable Git `rev`, rebuild the artifact and WASM packages, and rerun the same positive and negative fixture tests.
 
 ## License
 
-This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). See [LICENSE](./LICENSE) for the full license text.
+Licensed under the [Apache License 2.0](LICENSE).

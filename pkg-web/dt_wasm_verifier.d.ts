@@ -11,9 +11,9 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
+    readonly initVerifierRuntime: () => [number, number];
     readonly verifyCompressedBytes: (a: number, b: number, c: number, d: number) => [number, number];
     readonly verifyCompressedOk: (a: number, b: number, c: number, d: number) => number;
-    readonly initVerifierRuntime: () => void;
     readonly babybearextinv: (a: number, b: number, c: number, d: number, e: number) => number;
     readonly babybearinv: (a: number) => number;
     readonly __wbindgen_free: (a: number, b: number, c: number) => void;

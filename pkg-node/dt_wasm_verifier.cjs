@@ -1,7 +1,10 @@
 /* @ts-self-types="./dt_wasm_verifier.d.ts" */
 
 function initVerifierRuntime() {
-    wasm.initVerifierRuntime();
+    const ret = wasm.initVerifierRuntime();
+    if (ret[1]) {
+        throw takeFromExternrefTable0(ret[0]);
+    }
 }
 exports.initVerifierRuntime = initVerifierRuntime;
 
