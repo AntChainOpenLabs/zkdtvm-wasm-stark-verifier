@@ -13,14 +13,16 @@ This build accepts only the compact **elided** proof form. A full proof containi
 
 The L4 machine, program and VK are verifier-release material. They are embedded in the WASM package and are not API inputs. See [the v0.8.0 verifier design](docs/v0.8.0-elided-wasm-verifier.md) for the binding and performance model.
 
-## Backend revision
+## Backend release
 
-The verifier backend is pinned to the immutable Git revision that contains the reusable elided L4 verifier:
+The verifier backend is selected through its published Git tag:
 
 ```text
 https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git
-6bb8a737bdc5473332b980820921c090211069c7
+v0.8.0
 ```
+
+For this release, that tag resolves to commit `6bb8a737bdc5473332b980820921c090211069c7`.
 
 An ordinary WASM build does not require a sibling backend checkout.
 
@@ -35,13 +37,13 @@ cargo install wasm-pack --version 0.13.1 --locked
 brew install binaryen
 ```
 
-Clone and select the verifier branch if it is not already present:
+Clone and select the verifier release:
 
 ```bash
 mkdir -p ~/projects/learn-from-openvm
 cd ~/projects/learn-from-openvm
 git clone https://github.com/AntChainOpenLabs/zkdtvm-wasm-stark-verifier.git
-git -C zkdtvm-wasm-stark-verifier switch v0.8.0-verifier
+git -C zkdtvm-wasm-stark-verifier checkout v0.8.0
 ```
 
 Build the Node target and verify the files on the Mac Desktop:
@@ -80,7 +82,7 @@ The checked-in [`artifacts/v0.8.0-l4-verifier.bin`](artifacts/v0.8.0-l4-verifier
 cd ..
 git clone https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git zkdtvm-stark-verifier-v0.8.0
 cd zkdtvm-stark-verifier-v0.8.0
-git checkout 6bb8a737bdc5473332b980820921c090211069c7
+git checkout v0.8.0
 cargo run --release \
   -p zkdtvm-stark-verifier \
   --bin build_l4_verifier_artifact -- \
@@ -109,7 +111,7 @@ Malformed bytes, a mismatched program VK, a mismatched fixed L4 VK, an invalid p
 
 ## Updating the backend dependency
 
-Test backend changes through a local path dependency first. After the backend change is published, pin its immutable Git `rev`, rebuild the artifact and WASM packages, and rerun the same positive and negative fixture tests.
+Test backend changes through a local path dependency first. After the backend change is published, select its Git release tag, rebuild the artifact and WASM packages, and rerun the same positive and negative fixture tests.
 
 ## License
 
