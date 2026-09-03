@@ -1,12 +1,17 @@
 import init, { initVerifierRuntime, verifyCompressedBytes } from '/pkg-web/dt_wasm_verifier.js';
 
-let inited = false;
+let initPromise;
 
-async function ensureInit() {
-  if (inited) return;
-  await init();
-  initVerifierRuntime();
-  inited = true;
+function ensureInit() {
+  // Share the in-flight result so concurrent warm and verify messages cannot
+  // initialize separate WASM runtimes or retry a deterministic init failure.
+  if (!initPromise) {
+    initPromise = (async () => {
+      await init();
+      initVerifierRuntime();
+    })();
+  }
+  return initPromise;
 }
 
 self.onmessage = async (ev) => {
