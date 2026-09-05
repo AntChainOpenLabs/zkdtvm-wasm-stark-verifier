@@ -12,13 +12,14 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
     readonly initVerifierRuntime: () => [number, number];
-    readonly verifyCompressedBytes: (a: number, b: number, c: number, d: number) => [number, number];
-    readonly verifyCompressedOk: (a: number, b: number, c: number, d: number) => number;
+    readonly verifyCompressedBytes: (a: any, b: any) => [number, number];
+    readonly verifyCompressedOk: (a: any, b: any) => number;
     readonly babybearextinv: (a: number, b: number, c: number, d: number, e: number) => number;
     readonly babybearinv: (a: number) => number;
     readonly __wbindgen_free: (a: number, b: number, c: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+    readonly __externref_table_alloc: () => number;
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __externref_table_dealloc: (a: number) => void;
     readonly __wbindgen_start: () => void;

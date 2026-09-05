@@ -7,10 +7,11 @@
   "scripts": {
     "wasm:bundler": "PATH=\"$PWD/node_modules/.bin:$PATH\" wasm-pack build . --target bundler --out-dir pkg --release",
     "wasm:web": "PATH=\"$PWD/node_modules/.bin:$PATH\" wasm-pack build . --target web --out-dir pkg-web --release",
-    "wasm:node": "PATH=\"$PWD/node_modules/.bin:$PATH\" wasm-pack build . --target nodejs --out-dir pkg-node --release",
+    "wasm:node": "PATH=\"$PWD/node_modules/.bin:$PATH\" wasm-pack build . --target nodejs --out-dir pkg-node --release && node scripts/write-node-compat.mjs",
     "wasm:all": "npm run wasm:bundler && npm run wasm:web && npm run wasm:node",
     "demo": "node scripts/serve.mjs",
     "test:node": "node scripts/verify_node.mjs",
+    "test:negative": "node scripts/test_node.mjs",
     "test:node:build": "npm run wasm:node && node scripts/verify_node.mjs"
   }
 }

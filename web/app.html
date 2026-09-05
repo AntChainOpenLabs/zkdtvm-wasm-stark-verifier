@@ -292,7 +292,7 @@
   <div class="wrap">
     <header>
       <h1>Compressed proof · WASM</h1>
-      <p>Verify a compressed STARK proof against the serialized key digest in the browser.</p>
+      <p>Verify a full-opening compressed STARK proof against your application's full verification key.</p>
     </header>
 
     <div class="grid">
@@ -348,8 +348,8 @@
 
     function fmtBytes(n) {
       if (n < 1024) return `${n} B`;
-      if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
-      return `${(n / (1024 * 1024)).toFixed(2)} MB`;
+      if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KiB (${n.toLocaleString('en-US')} B)`;
+      return `${(n / (1024 * 1024)).toFixed(2)} MiB (${n.toLocaleString('en-US')} B)`;
     }
 
     function sync() {
@@ -412,13 +412,23 @@
     function showFail(title, detail) {
       r.className = 'result visible fail';
       r.innerHTML = `
-        <div class="row"><span class="label">${title}</span></div>
-        <div class="msg">${detail ? String(detail) : ''}</div>
+        <div class="row"><span class="label"></span></div>
+        <div class="msg"></div>
       `;
+      r.querySelector('.label').textContent = title;
+      r.querySelector('.msg').textContent = detail ? String(detail) : '';
     }
 
     async function onFileInput(e, which) {
       const f = e.target.files[0];
+      const limit = which === 'p' ? 4 * 1024 * 1024 : 1024 * 1024;
+      if (f && f.size > limit) {
+        if (which === 'p') pb = null;
+        else vb = null;
+        sync();
+        showFail('File too large', `Maximum ${which === 'p' ? 'proof' : 'VK'} size is ${limit} bytes.`);
+        return;
+      }
       if (which === 'p') {
         pb = f ? { name: f.name, size: f.size, bytes: new Uint8Array(await f.arrayBuffer()) } : null;
       } else {
@@ -444,6 +454,14 @@
         e.preventDefault();
         const f = e.dataTransfer.files[0];
         if (!f) return;
+        const limit = which === 'p' ? 4 * 1024 * 1024 : 1024 * 1024;
+        if (f.size > limit) {
+          if (which === 'p') pb = null;
+          else vb = null;
+          sync();
+          showFail('File too large', `Maximum ${which === 'p' ? 'proof' : 'VK'} size is ${limit} bytes.`);
+          return;
+        }
         if (which === 'p') {
           pb = { name: f.name, size: f.size, bytes: new Uint8Array(await f.arrayBuffer()) };
         } else {

@@ -11,10 +11,11 @@ publish = false
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-# Published v0.8.0 backend containing the reusable, elided L4 verifier.
-zkdtvm-stark-verifier = { git = "https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git", tag = "v0.8.0", default-features = true }
+# Public q131/full-opening release; Cargo.lock pins the tag's resolved commit.
+zkdtvm-stark-verifier = { git = "https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git", tag = "v0.8.0", default-features = false }
 wasm-bindgen = "0.2.100"
 console_error_panic_hook = "0.1.7"
+js-sys = "0.3"
 
 # Force `getrandom` to enable the `js` feature on wasm32. Without this, transitive
 # dependencies pull in `getrandom` without the web-compatible backend and the build
@@ -28,6 +29,6 @@ opt-level = 3
 codegen-units = 1
 lto = true
 
-# wasm-pack: favor runtime speed over minimal binary size.
+# Rust O3 + LTO is the optimization boundary; build without a Binaryen post-pass.
 [package.metadata.wasm-pack.profile.release]
-wasm-opt = ["-O3"]
+wasm-opt = false

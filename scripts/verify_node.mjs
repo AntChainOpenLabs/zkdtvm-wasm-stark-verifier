@@ -12,12 +12,17 @@ const defaultVk = path.join(root, 'web/samples/compressed_vk.bin');
 const proofPath = process.argv[2] ?? defaultProof;
 const vkPath = process.argv[3] ?? defaultVk;
 
-const wasm = require(path.join(root, 'pkg-node', 'dt_wasm_verifier.cjs'));
+const wasm = require(path.join(root, 'pkg-node', 'dt_wasm_verifier.js'));
 const { initVerifierRuntime, verifyCompressedBytes } = wasm;
 
 const initStart = performance.now();
 initVerifierRuntime();
 console.log('init', (performance.now() - initStart).toFixed(2), 'ms');
+for (const [inputPath, limit] of [[proofPath, 4 * 1024 * 1024], [vkPath, 1024 * 1024]]) {
+  if (fs.statSync(inputPath).size > limit) {
+    throw new Error(`DTV_INPUT_TOO_LARGE: ${inputPath} exceeds ${limit} bytes`);
+  }
+}
 const proof = fs.readFileSync(proofPath);
 const vk = fs.readFileSync(vkPath);
 console.log('proof', proofPath, proof.length);
