@@ -2,7 +2,7 @@
 name = "dt-wasm-verifier"
 version = "0.8.0"
 edition = "2021"
-description = "WASM bindings for zkdtvm compressed proof verification (zkdtvm-stark-verifier)"
+description = "WASM bindings for zkDTVM Seal proof verification"
 license = "Apache-2.0"
 repository = "https://github.com/AntChainOpenLabs/zkdtvm-wasm-stark-verifier"
 publish = false
@@ -11,7 +11,6 @@ publish = false
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-# Public q131/full-opening release; Cargo.lock pins the tag's resolved commit.
 zkdtvm-stark-verifier = { git = "https://github.com/AntChainOpenLabs/zkdtvm-stark-verifier.git", tag = "v0.8.0", default-features = false }
 wasm-bindgen = "0.2.100"
 console_error_panic_hook = "0.1.7"
@@ -23,7 +22,7 @@ js-sys = "0.3"
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.2", features = ["js"] }
 
-# Speed over wasm size: faster in-browser verify (often noticeably vs opt-level "s" + -Oz).
+# Optimize the single-threaded verifier with Rust O3 and LTO.
 [profile.release]
 opt-level = 3
 codegen-units = 1

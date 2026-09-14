@@ -1,6 +1,6 @@
 {
   "name": "dt-wasm-verifier",
-  "description": "WASM bindings for zkdtvm compressed proof verification (zkdtvm-stark-verifier)",
+  "description": "WASM bindings for zkDTVM Seal proof verification",
   "version": "0.8.0",
   "license": "Apache-2.0",
   "repository": {

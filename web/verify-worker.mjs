@@ -32,10 +32,8 @@ self.onmessage = async (ev) => {
     const { id, proof, vk } = msg;
     try {
       await ensureInit();
-      const t0 = performance.now();
       verifyCompressedBytes(proof, vk);
-      const ms = performance.now() - t0;
-      self.postMessage({ type: 'result', id, ok: true, ms });
+      self.postMessage({ type: 'result', id, ok: true });
     } catch (e) {
       self.postMessage({ type: 'result', id, ok: false, error: String(e) });
     }

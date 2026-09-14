@@ -229,15 +229,6 @@
       color: var(--muted);
     }
 
-    .result .time {
-      font-variant-numeric: tabular-nums;
-      font-size: 1.85rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-    }
-
-    .result .unit { font-size: 1rem; font-weight: 600; color: var(--muted); }
-
     .result .msg {
       margin-top: 0.65rem;
       font-size: 0.88rem;
@@ -291,20 +282,20 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Compressed proof · WASM</h1>
-      <p>Verify a full-opening compressed STARK proof against your application's full verification key.</p>
+      <h1>Seal proof · WASM</h1>
+      <p>Verify a saved zkDTVM proof against the expected application key.</p>
     </header>
 
     <div class="grid">
       <label class="drop" id="dzP" data-key="p">
         <strong>Proof</strong>
-        <span class="hint">Drop or choose <code>compressed_proof.bin</code></span>
+        <span class="hint">Drop or choose <code>block_25954917.seal</code></span>
         <span class="meta" id="metaP"></span>
         <input id="p" type="file" accept=".bin,application/octet-stream,*/*" />
       </label>
       <label class="drop" id="dzV" data-key="v">
-        <strong>Verification key</strong>
-        <span class="hint">Drop or choose <code>compressed_vk.bin</code></span>
+        <strong>Application key</strong>
+        <span class="hint">Drop or choose <code>vk.bin</code> or an <code>.application-key</code> file</span>
         <span class="meta" id="metaV"></span>
         <input id="v" type="file" accept=".bin,application/octet-stream,*/*" />
       </label>
@@ -385,7 +376,7 @@
           } else if (m.type === 'result') {
             if (m.id !== verifySeq) return;
             go.classList.remove('loading');
-            if (m.ok) showOk(m.ms);
+            if (m.ok) showOk();
             else showFail('Verification failed', m.error);
           }
         };
@@ -398,14 +389,12 @@
       getWorker().postMessage({ type: 'warm' });
     }
 
-    function showOk(ms) {
+    function showOk() {
       r.className = 'result visible ok';
       r.innerHTML = `
         <div class="row">
           <span class="label">Verification passed</span>
-          <span class="time">${ms.toFixed(1)}</span><span class="unit">ms</span>
         </div>
-        <div class="msg">Time is verify-only inside the worker (excluding file I/O and UI).</div>
       `;
     }
 
@@ -477,19 +466,19 @@
       loadSampleBtn.disabled = true;
       try {
         const [pr, vr] = await Promise.all([
-          fetch('/web/samples/compressed_proof.bin'),
-          fetch('/web/samples/compressed_vk.bin'),
+          fetch('/web/samples/block_25954917.seal'),
+          fetch('/zkdtvm_vks/v0.8.0/vk.bin'),
         ]);
         if (!pr.ok) throw new Error(`proof HTTP ${pr.status}`);
         if (!vr.ok) throw new Error(`vk HTTP ${vr.status}`);
         const [pBuf, vBuf] = await Promise.all([pr.arrayBuffer(), vr.arrayBuffer()]);
         pb = {
-          name: 'compressed_proof.bin (sample)',
+          name: 'block_25954917.seal (sample)',
           size: pBuf.byteLength,
           bytes: new Uint8Array(pBuf),
         };
         vb = {
-          name: 'compressed_vk.bin (sample)',
+          name: 'vk.bin (v0.8.0)',
           size: vBuf.byteLength,
           bytes: new Uint8Array(vBuf),
         };

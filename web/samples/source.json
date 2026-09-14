@@ -1,0 +1,28 @@
+{
+  "source_revision": "d9b0566ed9a25f7e73676f9b37884b5b7b02a747",
+  "block": 25954917,
+  "container": "zkdtvm_eth_proofs_network-network",
+  "image": "zkdtvm_eth_proofs:inner_0.8.0",
+  "image_id": "sha256:a9db3d2c267fea032f546834d4f41c5e1156087169f222857a73dbc3e37ce3fb",
+  "source": "root@117.50.199.59:/root/eth-proofs-online/zkdtvm-eth-proofs/output/network",
+  "program_identity": "8cd1111fb0cd61ef96254a18a92a255632adc86b6ae975cb86fee66b30c6427c",
+  "verifier_id": "0809dad73599c33e0c1838423ba49e5860d086ca1337c09c7c254cf650d8e5b4",
+  "files": {
+    "block_25954917.seal": {
+      "bytes": 267918,
+      "sha256": "fc5aa9d4f355e1851fa8ff65a86481b3e6369243419261fbfd1c5255e46c1053"
+    },
+    "block_25954917.application-key": {
+      "bytes": 2440,
+      "sha256": "89744d2cd7c8fb53c2e654d962a69ce6bc7433d0d43a604e2c90a98d53f0fa86"
+    },
+    "block_25954917.seal-key": {
+      "bytes": 381513,
+      "sha256": "9d05d5e9f8d5fb8ea3dddb1ae6b1fce5706887a4c6f79959cf2a83e87bbc4ca1"
+    },
+    "block_25954917.receipt": {
+      "bytes": 268707,
+      "sha256": "28fd853ab5eb3a80fb2bd75d54de162b46352855a2a5f8f206de3f25fc3f8bbd"
+    }
+  }
+}
